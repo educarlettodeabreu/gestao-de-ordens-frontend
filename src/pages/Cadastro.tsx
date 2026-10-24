@@ -1,6 +1,72 @@
+import { useState } from "react";
 import { Link } from "react-router";
+import { criarConta } from "../services/Cadastro.ts";
 
 function Cadastro() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [carregando, setCarregando] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (carregando) return;
+
+    setMensagem("");
+
+    if (
+      nome.length < 3 ||
+      nome.length > 100 ||
+      !email ||
+      email.length > 150 ||
+      senha.length < 8 ||
+      senha.length > 72
+    ) {
+      setMensagem("Dados inválidos. Verifique as informações.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      setMensagem("As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      setCarregando(true);
+
+      const resposta = await criarConta(nome, email, senha);
+
+      switch (resposta.status) {
+        case 200:
+          setMensagem("Conta criada com sucesso!");
+          break;
+
+        case 400:
+          setMensagem("Dados inválidos. Verifique as informações.");
+          break;
+
+        case 429:
+          setMensagem("Muitas tentativas. Tente novamente mais tarde.");
+          break;
+
+        case 500:
+          setMensagem("Não foi possível criar sua conta. Tente novamente.");
+          break;
+
+        default:
+          setMensagem("Ocorreu um erro inesperado.");
+      }
+    } catch (erro) {
+      setMensagem("Não foi possível conectar ao servidor. Tente novamente.");
+      console.error("Erro na requisição de cadastro:", erro);
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   return (
     <main className="login-page">
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,7 +90,11 @@ function Cadastro() {
             <p>Preencha seus dados para começar.</p>
           </header>
 
-          <form className="login-form" aria-labelledby="cadastro-title">
+          <form
+            className="login-form"
+            aria-labelledby="cadastro-title"
+            onSubmit={submit}
+          >
             <div className="login-field">
               <label htmlFor="cadastro-nome">Nome completo</label>
               <div className="login-input-wrapper">
@@ -36,6 +106,11 @@ function Cadastro() {
                   type="text"
                   id="cadastro-nome"
                   name="nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                  minLength={3}
+                  maxLength={100}
                   autoComplete="name"
                   placeholder="Digite seu nome completo"
                 />
@@ -53,6 +128,10 @@ function Cadastro() {
                   type="email"
                   id="cadastro-email"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  maxLength={150}
                   autoComplete="username"
                   placeholder="seu@email.com"
                 />
@@ -70,6 +149,11 @@ function Cadastro() {
                   type="password"
                   id="cadastro-senha"
                   name="senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                  minLength={8}
+                  maxLength={72}
                   autoComplete="new-password"
                   placeholder="Crie uma senha"
                 />
@@ -86,29 +170,53 @@ function Cadastro() {
                 <input
                   type="password"
                   id="cadastro-confirmar-senha"
+                  value={confirmarSenha}
+                  onChange={(e) => setConfirmarSenha(e.target.value)}
+                  required
+                  minLength={8}
+                  maxLength={72}
                   autoComplete="new-password"
                   placeholder="Digite a senha novamente"
                 />
               </div>
             </div>
 
-            <button className="login-submit" type="button">
-              Criar conta
+            <button
+              className="login-submit"
+              type="submit"
+              disabled={carregando}
+            >
+              {carregando ? "Criando conta..." : "Criar conta"}
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12h14m-6-6 6 6-6 6" />
               </svg>
             </button>
 
             <div
-              className="cadastro-feedback"
+              className="login-feedback"
               role="status"
               aria-live="polite"
               aria-atomic="true"
-            />
+            >
+              {mensagem && (
+                <p
+                  className={`login-message ${
+                    mensagem === "Conta criada com sucesso!"
+                      ? "login-message--success"
+                      : "login-message--error"
+                  }`}
+                >
+                  <span className="login-message-icon" aria-hidden="true">
+                    {mensagem === "Conta criada com sucesso!" ? "✓" : "!"}
+                  </span>
+                  {mensagem}
+                </p>
+              )}
+            </div>
           </form>
 
           <p className="cadastro-login">
-            Já possui uma conta? <Link to="/login">Entrar</Link>
+            Já possui uma conta? <Link to="/">Entrar</Link>
           </p>
         </section>
 
