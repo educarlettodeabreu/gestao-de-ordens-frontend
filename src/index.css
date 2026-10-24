@@ -197,6 +197,31 @@ body {
   cursor: wait;
 }
 
+.login-create-account {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #243f64;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.login-create-account:hover {
+  border-color: #94a3b8;
+  background: #f4f6f9;
+}
+
+.login-create-account:focus-visible {
+  outline: 3px solid #426994;
+  outline-offset: 3px;
+}
+
 .login-feedback:empty {
   display: none;
 }
@@ -244,6 +269,39 @@ body {
   text-align: center;
 }
 
+.cadastro-feedback {
+  min-height: 24px;
+  font-size: 14px;
+}
+
+.cadastro-login {
+  margin: 16px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.cadastro-login a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: #243f64;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cadastro-login a:hover {
+  color: #1a304f;
+}
+
+.cadastro-login a:focus-visible {
+  outline: 3px solid #426994;
+  outline-offset: 3px;
+}
+
 @media (max-width: 480px) {
   .login-page {
     padding: 32px 16px;
@@ -265,7 +323,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .login-field input,
-  .login-submit {
+  .login-submit,
+  .login-create-account {
     transition: none;
   }
 }

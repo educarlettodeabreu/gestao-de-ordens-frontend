@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { fzLogin } from "../services/Autenticacao.ts";
 function Login() {
   const [email, setEmail] = useState("");
@@ -105,14 +106,25 @@ function Login() {
               </div>
             </div>
 
-            <button className="login-submit" type="submit" disabled={carregando}>
+            <button
+              className="login-submit"
+              type="submit"
+              disabled={carregando}
+            >
               {carregando ? "Entrando..." : "Entrar"}
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12h14m-6-6 6 6-6 6" />
               </svg>
             </button>
 
-            <div className="login-feedback" role="status" aria-live="polite" aria-atomic="true">
+            <Link to="/cadastro">Criar uma conta</Link>
+
+            <div
+              className="login-feedback"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {mensagem && (
                 <p
                   className={`login-message ${

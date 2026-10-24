@@ -1,10 +1,15 @@
+import { BrowserRouter, Routes, Route } from "react-router";
 import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
+
 function App() {
   return (
-    <>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Login />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
