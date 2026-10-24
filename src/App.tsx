@@ -1,16 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router";
-import Login from "./pages/Login";
-import Cadastro from "./pages/Cadastro";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import { rotas } from "./routes/rotas.tsx";
+
+const router = createBrowserRouter(rotas);
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

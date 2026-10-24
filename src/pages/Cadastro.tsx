@@ -69,7 +69,6 @@ function Cadastro() {
 
   return (
     <main className="login-page">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <div className="login-layout">
         <header className="login-brand">
           <span className="login-brand-mark" aria-hidden="true">

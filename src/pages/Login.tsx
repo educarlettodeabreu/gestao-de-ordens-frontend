@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { fzLogin } from "../services/Autenticacao.ts";
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -9,6 +10,8 @@ function Login() {
 
   async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (carregando) return;
+
     try {
       setCarregando(true);
       setMensagem("");
@@ -17,7 +20,8 @@ function Login() {
 
       switch (resposta.status) {
         case 200:
-          setMensagem("Login realizado com sucesso!");
+          setSenha("");
+          await navigate("/dashboard", { replace: true });
           break;
 
         case 401:
@@ -26,6 +30,14 @@ function Login() {
 
         case 400:
           setMensagem("Dados inválidos!");
+          break;
+
+        case 403:
+          setMensagem("O servidor não permitiu o acesso.");
+          break;
+
+        case 404:
+          setMensagem("O serviço de autenticação está indisponível.");
           break;
 
         case 429:
@@ -40,7 +52,7 @@ function Login() {
           setMensagem("Ocorreu um erro inesperado!");
       }
     } catch (erro) {
-      setMensagem("nao foi possivel conectar ao servdior!");
+      setMensagem("Não foi possível conectar ao servidor. Tente novamente.");
       console.error("erro na requisicao:", erro);
     } finally {
       setCarregando(false);
@@ -126,15 +138,9 @@ function Login() {
               aria-atomic="true"
             >
               {mensagem && (
-                <p
-                  className={`login-message ${
-                    mensagem === "Login realizado com sucesso!"
-                      ? "login-message--success"
-                      : "login-message--error"
-                  }`}
-                >
+                <p className="login-message login-message--error">
                   <span className="login-message-icon" aria-hidden="true">
-                    {mensagem === "Login realizado com sucesso!" ? "✓" : "!"}
+                    !
                   </span>
                   {mensagem}
                 </p>
